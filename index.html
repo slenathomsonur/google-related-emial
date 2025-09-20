@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dem Join - Email Confirmation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a73e8 0%, #6c5ce7 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            color: #202124;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+        
+        .logo {
+            margin-bottom: 20px;
+        }
+        
+        .logo h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1a73e8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .logo-icon {
+            background: #1a73e8;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .subtitle {
+            color: #202124;
+            font-size: 24px;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+        
+        .instruction {
+            color: #5f6368;
+            font-size: 16px;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+        
+        .form-container {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #5f6368;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        input[type="email"] {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #dadce0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border 0.2s;
+        }
+        
+        input[type="email"]:focus {
+            border: 2px solid #1a73e8;
+            outline: none;
+        }
+        
+        .submit-button {
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .submit-button:hover {
+            background-color: #1565c0;
+        }
+        
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 30px 0;
+            color: #5f6368;
+        }
+        
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            border-bottom: 1px solid #dadce0;
+        }
+        
+        .divider span {
+            padding: 0 10px;
+            font-size: 14px;
+        }
+        
+        .email-simulator {
+            background: #f5f5f5;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 30px;
+            text-align: left;
+            display: none;
+        }
+        
+        .email-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .sender {
+            font-weight: 600;
+            color: #1a73e8;
+        }
+        
+        .email-subject {
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .confirmation-link {
+            display: block;
+            background: #1a73e8;
+            color: white;
+            text-decoration: none;
+            padding: 14px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 20px 0;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        
+        .confirmation-link:hover {
+            background: #1565c0;
+        }
+        
+        .footer {
+            margin-top: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .footer select {
+            padding: 8px 12px;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            color: #5f6368;
+            font-size: 12px;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .footer-links a {
+            color: #5f6368;
+            text-decoration: none;
+            font-size: 12px;
+        }
+        
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .step {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #dadce0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: white;
+            z-index: 2;
+        }
+        
+        .step.active {
+            background: #1a73e8;
+        }
+        
+        .step.completed {
+            background: #0f9d58;
+        }
+        
+        .step-line {
+            position: absolute;
+            height: 4px;
+            top: 13px;
+            left: 15px;
+            right: 15px;
+            background: #dadce0;
+            z-index: 1;
+        }
+        
+        .step-label {
+            position: absolute;
+            top: 35px;
+            font-size: 12px;
+            color: #5f6368;
+            width: 100px;
+            left: -35px;
+            text-align: center;
+        }
+        
+        .step-1 .step-label {
+            left: -15px;
+        }
+        
+        .step-3 .step-label {
+            left: -35px;
+        }
+        
+        .success-message {
+            background: #e6f4ea;
+            color: #0f9d58;
+            padding: 16px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+        
+        .success-icon {
+            font-size: 48px;
+            color: #0f9d58;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <h1><div class="logo-icon"><i class="fas fa-users"></i></div> Dem Join</h1>
+        </div>
+        
+        <div class="step-indicator">
+            <div class="step-step">
+                <div class="step active" id="step1">1</div>
+                <div class="step-label step-1">Enter Email</div>
+            </div>
+            <div class="step-step">
+                <div class="step" id="step2">2</div>
+                <div class="step-label">Confirm</div>
+            </div>
+            <div class="step-step">
+                <div class="step" id="step3">3</div>
+                <div class="step-label step-3">Complete</div>
+            </div>
+            <div class="step-line"></div>
+        </div>
+        
+        <h2 class="subtitle">Verify your email address</h2>
+        <p class="instruction">To complete your Dem Join registration, we need to verify your email address</p>
+        
+        <div class="form-container">
+            <label for="email">Email address</label>
+            <input type="email" id="email" placeholder="your.email@example.com">
+        </div>
+        
+        <button class="submit-button" onclick="sendConfirmation()">Send Confirmation Email</button>
+        
+        <div class="email-simulator" id="emailSimulator">
+            <div class="email-header">
+                <div class="sender">adrianbrooks77@outlook.com</div>
+                <div>Now</div>
+            </div>
+            <div class="email-subject">Confirm your Dem Join account</div>
+            <p>Hello,</p>
+            <p>You recently created a Dem Join account. Please confirm your email address by clicking the link below:</p>
+            
+            <a href="#" class="confirmation-link" onclick="confirmEmail(); return false;">Confirm Email Address</a>
+            
+            <p>If you didn't create this account, please ignore this email.</p>
+            <p>Thanks,<br>The Dem Join Team</p>
+        </div>
+        
+        <div class="success-message" id="successMessage">
+            <div class="success-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h3>Email Verified Successfully!</h3>
+            <p>Your email address has been confirmed. Redirecting you to Google...</p>
+        </div>
+        
+        <div class="footer">
+            <select>
+                <option>English (United States)</option>
+                <option>Español</option>
+                <option>Français</option>
+            </select>
+            
+            <div class="footer-links">
+                <a href="#">Help</a>
+                <a href="#">Privacy</a>
+                <a href="#">Terms</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function sendConfirmation() {
+            const email = document.getElementById('email').value;
+            
+            // Simple email validation
+            if (!email || !email.includes('@')) {
+                alert('Please enter a valid email address');
+                return;
+            }
+            
+            // Show the email simulator
+            document.getElementById('emailSimulator').style.display = 'block';
+            
+            // Update step indicator
+            document.getElementById('step1').classList.remove('active');
+            document.getElementById('step1').classList.add('completed');
+            document.getElementById('step2').classList.add('active');
+            
+            // Scroll to email simulator
+            document.getElementById('emailSimulator').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function confirmEmail() {
+            // Show success message
+            document.getElementById('successMessage').style.display = 'block';
+            
+            // Update step indicator
+            document.getElementById('step2').classList.remove('active');
+            document.getElementById('step2').classList.add('completed');
+            document.getElementById('step3').classList.add('active');
+            
+            // Scroll to success message
+            document.getElementById('successMessage').scrollIntoView({ behavior: 'smooth' });
+            
+            // Redirect to Google after 3 seconds
+            setTimeout(function() {
+                window.location.href = 'https://www.google.com';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
